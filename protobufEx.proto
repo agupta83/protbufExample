@@ -1,0 +1,30 @@
+package leveldbGlog;
+message Datum {
+	required string seq_name = 1;	// Accession number for the SWISS-PROT database 
+	
+	required float mcg = 2;	// McGeoch's method for signal sequence
+		 		//recognition. 
+				
+	required float gvh = 3;	// von Heijne's method for signal sequence 
+				// recognition. 
+	required float alm = 4;	// Score of the ALOM membrane spanning region
+		 		// prediction program. 
+	required float mit = 5;	// Score of discriminant analysis of the amino
+		 		// acid content of the N-terminal region (20
+				// residues long) of mitochondrial and
+				// non-mitochondrial proteins
+				
+	required float erl = 6;	//Presence of "HDEL" substring (thought to act
+		 		// as a signal for retention in the endoplasmic
+				// reticulum lumen). Binary attribute. 
+				
+	required float pox = 7;	// Peroxisomal targeting signal in the
+		 		// C-terminus. 
+	required float vac = 8;	// Score of discriminant analysis of the amino
+		 		// acid content of vacuolar and extracellular
+				// proteins. 
+	required float nuc = 9;	// Score of discriminant analysis of nuclear
+		 		// localization signals of nuclear and
+				// non-nuclear proteins.
+	required string label = 10;	// label
+}
