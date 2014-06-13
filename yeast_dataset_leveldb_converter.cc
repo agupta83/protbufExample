@@ -2,11 +2,22 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <stdint.h>
+#include <fcntl.h>
 
 #include <leveldb/db.h>
 #include <glog/logging.h>
 
+#include <google/protobuf/text_format.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/io/zero_copy_stream_impl.h>
+
+
 #include "protobufEx.pb.h"
+
+using google::protobuf::io::FileOutputStream;
+using google::protobuf::Message;
+
 
 void convert_dataset(const char* data_filename, const char * db_filename) {
 	
@@ -119,7 +130,13 @@ void convert_dataset(const char* data_filename, const char * db_filename) {
 	data_file.close();
 	
 }
-
+void WriteProtoToTextFile(const Message& proto, const char* filename) {
+	int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	FileOutputStream* output = new FileOutputStream(fd);
+	CHECK(google::protobuf::TextFormat::Print(proto, output));
+	delete output;
+	close(fd);
+}
 void print_db(const char * db_filename){
 	// Open leveldb
 	leveldb::DB* db;
@@ -130,13 +147,19 @@ void print_db(const char * db_filename){
 	leveldbGlog::Datum data;
 	leveldb::Iterator* it = db->NewIterator(leveldb::ReadOptions());
 	std::string value;
+	bool write = true;
 	for (it->SeekToFirst(); it->Valid(); it->Next()) {
 		data.ParseFromString(it->value().ToString());
+		if(write){
+			WriteProtoToTextFile(data, "message.prototxt");
+			write = false;
+		}
 		std::cout << it->key().ToString() << ": "  << data.seq_name() <<std::endl;
 	}
 	assert(it->status().ok());  // Check for any errors found during the scan
 	delete it;
 }
+
 int main(int argc, char** argv){
 	
 	

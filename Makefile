@@ -14,5 +14,5 @@ proto: protoc protobufEx.pb.cc
 protoc: protobufEx.proto
 	protoc -I=./ --cpp_out=./ protobufEx.proto
 clean:
-	rm *.o 2014* *.bin
+	rm *.o 2014* *.bin*
 	
